@@ -24,7 +24,9 @@ test('Client App login test', async({page})=>{
 
     await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*",
         async route =>{
+            //grab the response of the request
             const response = await page.request.fetch(route.request())
+            //manipulate the response and send fake response to browser
             let body = await JSON.stringify(fakePayLoadOrders)
             route.fulfill(
                 {
