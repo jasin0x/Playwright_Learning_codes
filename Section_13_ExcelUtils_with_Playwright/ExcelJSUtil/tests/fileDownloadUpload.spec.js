@@ -44,7 +44,7 @@ test("Upload download excel validation", async({page})=>{
   const download = await downloadPromise;
   await download.saveAs(`${downloadsPath}download.xlsx`);
 
-  writeExcelTest("Mango",updateValue,{rowChange:0,colChange:2},"/Users/mahamudulhasan/Downloads/download.xlsx");
+  writeExcelTest(textSearch,updateValue,{rowChange:0,colChange:2},"/Users/mahamudulhasan/Downloads/download.xlsx");
   await page.locator("#fileinput").click()
   await page.locator("#fileinput").setInputFiles("/Users/mahamudulhasan/Downloads/download.xlsx") 
 
