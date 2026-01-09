@@ -22,6 +22,7 @@ test('Client App login test', async({page})=>{
 
     await page.goto("https://rahulshettyacademy.com/client");
 
+    //intercept the network call and mock the response
     await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*",
         async route =>{
             //grab the response of the request

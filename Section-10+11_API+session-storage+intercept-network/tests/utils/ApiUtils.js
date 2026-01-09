@@ -6,6 +6,7 @@ class ApiUtils{
     }
 
     async getToken(){
+        // send post request to login endpoint
         const loginResponse = await this.apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
                 {data: this.loginPayload}
             )
@@ -18,7 +19,6 @@ class ApiUtils{
     }
 
     async createOrder(orderPayload){
-        //
         let response = {}
         response.token = await this.getToken()
         //send post request to create order endpoint

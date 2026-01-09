@@ -42,6 +42,7 @@ test("Upload download excel validation", async({page})=>{
   await page.getByRole('button', { name: 'Download' }).click();
   //wait for the event to complete
   const download = await downloadPromise;
+  //save download to desired path
   await download.saveAs(`${downloadsPath}download.xlsx`);
 
   writeExcelTest(textSearch,updateValue,{rowChange:0,colChange:2},"/Users/mahamudulhasan/Downloads/download.xlsx");
