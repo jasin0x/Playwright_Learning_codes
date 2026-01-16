@@ -19,13 +19,14 @@ class CheckoutPage {
         await this.dayDropdown.selectOption(day)
         await this.ccvInput.fill(ccv)
         await this.nameInput.fill(name)
+        
         await this.countryInput.pressSequentially('ind') //input characters with delay
         await this.dropdownOptions.waitFor()
 
         const optionsCount = await this.dropdownOptions.locator("button").count();
         for (let i = 0; i < optionsCount; i++) {
             const text = await this.dropdownOptions.locator("button").nth(i).textContent()
-            if (text === " India") {
+            if (text.trim() === country) {
                 await this.dropdownOptions.locator("button").nth(i).click();
                 break;
             }

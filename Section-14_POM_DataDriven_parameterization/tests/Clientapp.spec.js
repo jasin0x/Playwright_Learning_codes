@@ -1,37 +1,35 @@
 const {test, expect} = require('@playwright/test');
-const { LoginPage } = require('../pageObjects/LoginPage');
-const { DashboardPage } = require('../pageObjects/DashboardPage');
-const { CartPage } = require('../pageObjects/CartPage');
-const { CheckoutPage } = require('../pageObjects/CheckoutPage');
-
+const POMmanager = require('../pageObjects/POManager');
 
 test('Client App login test', async({page})=>{
+    
+    const poManager = new POMmanager(page)
     const productName = "ZARA COAT 3"
     const products = page.locator(".card-body");
     const email = "stiven@gmail.com" 
     const password = "Awer123$"
 
     // create object of LoginPage
-    const loginPage = new LoginPage(page)
+    const loginPage = poManager.getLoginPage()
 
     await loginPage.goTo()
     await loginPage.validLogin(email, password)
-    const dashboardPage = new DashboardPage(page)
+    const dashboardPage = poManager.getDashboardPage()
 
     await dashboardPage.searchProductAddCart(productName)
     await dashboardPage.navigateToCart()
     await page.locator("div li").first().waitFor();
 
     // create object of CartPage
-    const cartPage = new CartPage(page)
+    const cartPage = poManager.getCartPage()
     // verify item is in cart
-    const bool = await cartPage.verifyItenInCart();
+    const bool = await cartPage.verifyItemInCart();
     expect(bool).toBeTruthy();
-    await cartPage.checkOutButton.click();
+    await cartPage.Checkout()
 
 
     // create object of CheckoutPage
-    const checkoutPage = new CheckoutPage(page)
+    const checkoutPage = poManager.getCheckoutPage()
     // fill checkout details
     await checkoutPage.fillCheckoutDetails("11", "15", "332", "Stive", " ind")
     await expect(checkoutPage.email).toHaveText(email)

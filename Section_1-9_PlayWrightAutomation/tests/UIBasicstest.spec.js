@@ -74,8 +74,8 @@ test.only("Child window handle", async({browser})=>{
 
     const [newPage] = await Promise.all([
         context.waitForEvent("page"), //listen for new page event   pending, rejected, fulfilled
-        documentLink.click()
-    ])
+        documentLink.click() //click that opens new tab
+    ]) //triggering action that opens new tab
 
     const text = await newPage.locator(".im-para.red").textContent();
     const arrayText = text.split("@");
