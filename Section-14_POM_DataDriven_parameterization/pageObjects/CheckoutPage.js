@@ -1,3 +1,5 @@
+const { expect } = require("@playwright/test");
+
 class CheckoutPage {
 
     constructor(page) {
@@ -9,7 +11,9 @@ class CheckoutPage {
         this.countryInput = this.page.locator("[placeholder*='Select Country']")
         this.dropdownOptions = this.page.locator(".ta-results")
         this.email = this.page.locator(".user__name [type='text']").first()
-        this.placeOrderButton = this.page.locator(".action__submit")
+        this.placeOrderButton = this.page.locator(".action__submit");
+        this.orderConfirmationText = this.page.locator(".hero-primary")
+        this.orderId =  this.page.locator(".em-spacer-1 .ng-star-inserted")
         //this.countryOptions = this.page.locator("button")
     }
 
@@ -31,6 +35,12 @@ class CheckoutPage {
                 break;
             }
         }
+    }
+
+    async SubmitAndGetOrderId(){
+        await this.placeOrderButton.click();
+        await expect(this.orderConfirmationText).toHaveText(" Thankyou for the order. ");
+        return await this.orderId.textContent();
     }
 
 }

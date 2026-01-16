@@ -22,40 +22,28 @@ test('Client App login test', async({page})=>{
 
     // create object of CartPage
     const cartPage = poManager.getCartPage()
+
     // verify item is in cart
-    const bool = await cartPage.verifyItemInCart();
+    const bool = await cartPage.verifyItemInCart("ZARA COAT 3");
     expect(bool).toBeTruthy();
     await cartPage.Checkout()
-
 
     // create object of CheckoutPage
     const checkoutPage = poManager.getCheckoutPage()
     // fill checkout details
-    await checkoutPage.fillCheckoutDetails("11", "15", "332", "Stive", " ind")
+    await checkoutPage.fillCheckoutDetails("11", "15", "332", "Stive", "India")
     await expect(checkoutPage.email).toHaveText(email)
-    await checkoutPage.placeOrderButton.click();
 
+    // submit order and get order id
+    const orderId = await checkoutPage.SubmitAndGetOrderId();
+    console.log("Order ID is: "+ orderId);
 
-    await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ")
-    const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
-    console.log(orderId);
+    // go to My Orders page and verify order id is present
+    await dashboardPage.navigateToOrders()
 
-
-    await page.locator("button[routerlink*='myorders']").click();
-    await page.locator("tbody").waitFor();
-
-    const rows = await page.locator("tbody tr");
-
-    for(let i=0; i< await rows.count(); i++){
-        const rowOrderID = await rows.nth(i).locator("th").textContent()
-        if(orderId.includes(rowOrderID)){
-            await rows.nth(i).locator("button").first().click()
-            break
-        }
-    }
-
-    const orderIdDetails = await page.locator(".col-text").textContent();
-    expect(orderId.includes(orderIdDetails)).toBeTruthy();
+    const orderHistoryPage = poManager.getOrderHistoryPage()
+    await orderHistoryPage.searchOrderAndSelect(orderId)
+    expect(orderId.includes(await orderHistoryPage.getOrderID())).toBeTruthy();
 
     //await page.pause(3000);
 

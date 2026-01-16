@@ -1,7 +1,8 @@
-const LoginPage = require("./LoginPage");
-const DashboardPage = require("./DashboardPage");
-const CartPage = require("./CartPage");
-const CheckoutPage = require("./CheckoutPage");
+const {LoginPage} = require("./LoginPage");
+const {DashboardPage} = require("./DashboardPage");
+const {CartPage} = require("./CartPage");
+const {CheckoutPage} = require("./CheckoutPage");
+const {OrderHistoryPage} = require("./OrderHistoryPage");
 
 // Page Object Manager Class to manage all page objects and provide access to them
 class POMmanager{
@@ -11,6 +12,7 @@ class POMmanager{
         this.dashboardPage = new DashboardPage(this.page)
         this.cartPage = new CartPage(this.page)
         this.checkoutPage = new CheckoutPage(this.page)
+        this.orderHistoryPage = new OrderHistoryPage(this.page)
     }
 
     getLoginPage(){
@@ -27,6 +29,10 @@ class POMmanager{
 
     getCheckoutPage(){
         return this.checkoutPage
+    }
+
+    getOrderHistoryPage(){
+        return this.orderHistoryPage
     }
 
 }
