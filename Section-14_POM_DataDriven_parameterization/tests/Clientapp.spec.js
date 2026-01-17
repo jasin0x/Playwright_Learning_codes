@@ -1,50 +1,53 @@
-const {test, expect} = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const POMmanager = require('../pageObjects/POManager');
+// Json->string->object
+const dataset = JSON.parse(JSON.stringify(require('../utils/placeOrderTestData.json')))
 
-test('Client App login test', async({page})=>{
-    
-    const poManager = new POMmanager(page)
-    const productName = "ZARA COAT 3"
-    const products = page.locator(".card-body");
-    const email = "stiven@gmail.com" 
-    const password = "Awer123$"
+for(const data of dataset) {
 
-    // create object of LoginPage
-    const loginPage = poManager.getLoginPage()
+    test(`Client App login ${data.productName}`, async ({ page }) => {
+        const poManager = new POMmanager(page)
+        // const productName = data.productName
+        const products = page.locator(".card-body");
+        // const email = data.username
+        // const password = data.password
 
-    await loginPage.goTo()
-    await loginPage.validLogin(email, password)
-    const dashboardPage = poManager.getDashboardPage()
+        // create object of LoginPage
+        const loginPage = poManager.getLoginPage()
 
-    await dashboardPage.searchProductAddCart(productName)
-    await dashboardPage.navigateToCart()
-    await page.locator("div li").first().waitFor();
+        await loginPage.goTo()
+        await loginPage.validLogin(data.username, data.password)
+        const dashboardPage = poManager.getDashboardPage()
 
-    // create object of CartPage
-    const cartPage = poManager.getCartPage()
+        await dashboardPage.searchProductAddCart(data.productName)
+        await dashboardPage.navigateToCart()
+        await page.locator("div li").first().waitFor();
 
-    // verify item is in cart
-    const bool = await cartPage.verifyItemInCart("ZARA COAT 3");
-    expect(bool).toBeTruthy();
-    await cartPage.Checkout()
+        // create object of CartPage
+        const cartPage = poManager.getCartPage()
+        // verify item is in cart
+        const bool = await cartPage.verifyItemInCart(data.productName);
+        expect(bool).toBeTruthy();
+        await cartPage.Checkout()
 
-    // create object of CheckoutPage
-    const checkoutPage = poManager.getCheckoutPage()
-    // fill checkout details
-    await checkoutPage.fillCheckoutDetails("11", "15", "332", "Stive", "India")
-    await expect(checkoutPage.email).toHaveText(email)
+        // create object of CheckoutPage
+        const checkoutPage = poManager.getCheckoutPage()
+        // fill checkout details
+        await checkoutPage.fillCheckoutDetails("11", "15", "332", "Stive", "India")
+        await expect(checkoutPage.email).toHaveText(data.username);
 
-    // submit order and get order id
-    const orderId = await checkoutPage.SubmitAndGetOrderId();
-    console.log("Order ID is: "+ orderId);
+        // submit order and get order id
+        const orderId = await checkoutPage.SubmitAndGetOrderId();
+        console.log("Order ID is: " + orderId);
 
-    // go to My Orders page and verify order id is present
-    await dashboardPage.navigateToOrders()
+        // go to My Orders page and verify order id is present
+        await dashboardPage.navigateToOrders()
 
-    const orderHistoryPage = poManager.getOrderHistoryPage()
-    await orderHistoryPage.searchOrderAndSelect(orderId)
-    expect(orderId.includes(await orderHistoryPage.getOrderID())).toBeTruthy();
+        const orderHistoryPage = poManager.getOrderHistoryPage()
+        await orderHistoryPage.searchOrderAndSelect(orderId)
+        expect(orderId.includes(await orderHistoryPage.getOrderID())).toBeTruthy();
 
-    //await page.pause(3000);
+        //await page.pause(3000);
 
-})
+    })
+}
