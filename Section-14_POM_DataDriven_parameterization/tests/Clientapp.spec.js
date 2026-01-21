@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const POMmanager = require('../pageObjects/POManager');
+const {customTest} = require('../utils/test-base');
+
 // Json->string->object
 const dataset = JSON.parse(JSON.stringify(require('../utils/placeOrderTestData.json')))
 
@@ -50,4 +52,33 @@ for(const data of dataset) {
         //await page.pause(3000);
 
     })
+
 }
+
+
+customTest("Client App login", async ({ page, testDataForOrder }) => {
+        const poManager = new POMmanager(page)
+        // const productName = data.productName
+        const products = page.locator(".card-body");
+        // const email = data.username
+        // const password = data.password
+
+        // create object of LoginPage
+        const loginPage = poManager.getLoginPage()
+
+        await loginPage.goTo()
+        await loginPage.validLogin(testDataForOrder.username, testDataForOrder.password)
+        const dashboardPage = poManager.getDashboardPage()
+
+        await dashboardPage.searchProductAddCart(testDataForOrder.productName)
+        await dashboardPage.navigateToCart()
+        await page.locator("div li").first().waitFor();
+
+        // create object of CartPage
+        const cartPage = poManager.getCartPage()
+        // verify item is in cart
+        const bool = await cartPage.verifyItemInCart(testDataForOrder.productName);
+        expect(bool).toBeTruthy();
+        await cartPage.Checkout()
+
+})
