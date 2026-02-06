@@ -7,7 +7,8 @@ const dataset = JSON.parse(JSON.stringify(require('../utils/placeOrderTestData.j
 
 for(const data of dataset) {
 
-    test(`Client App login ${data.productName}`, async ({ page }) => {
+    test(`@Web Client App login ${data.productName}`, async ({ page }) => {
+        // run only the test case with tag @Web, this is useful when you have a large number of tests and you want to run only a specific subset of tests that are relevant to a particular feature, functionality, or category. By using tags, you can easily filter and execute only the tests that are tagged with @Web, allowing for more efficient test execution and better organization of your test suite.
         const poManager = new POMmanager(page)
         // const productName = data.productName
         const products = page.locator(".card-body");
